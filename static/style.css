@@ -47,16 +47,28 @@ body {
 	height: 70%;
 }
 
-#toggle-button{
-	position: absolute;
-	width: 5%;
-	height: calc(5% * (1 / 0.7));
-	border-radius: 50%;
-	box-sizing: border-box;
-	background-color: rgba(255, 0, 0, 0.9);
+#toggle-button {
+    position: absolute;
+    width: 15%;
+    height: calc(5% * (1 / 0.7));
+    border-radius: 100vh;
+    box-sizing: border-box;
+    background-color: rgba(255, 0, 0, 0.9);
     transition: background-color 0.2s ease;
-	border: none;
+
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 1000;
+    font-size: min(3.8vw, calc(3.8vh * 1/0.7));
+    white-space: nowrap;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #ffffff; 
 }
+
+
 
 #toggle-button.active{
 	background-color: rgba(0, 255, 0, 0.5);
@@ -73,6 +85,17 @@ body {
 	border: none;
 }
 
-.shape-button.active {
-	background-color: rgba(4, 255, 0, 0.5);
+.ps-button{
+	position: absolute;
+	width: 4.92%;
+	height: calc(4.92% * (1 / 0.7));
+	border-radius: 50%;
+	box-sizing: border-box;
+	background-color: rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease;
+	border: none
+}
+
+.button.active {
+	background-color: rgba(18, 26, 170, 0.5);
 }

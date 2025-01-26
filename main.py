@@ -14,8 +14,13 @@ BUTTON_MAP = {
     "triangle-button": vg.DS4_BUTTONS.DS4_BUTTON_TRIANGLE,
     "square-button": vg.DS4_BUTTONS.DS4_BUTTON_SQUARE,
     "circle-button": vg.DS4_BUTTONS.DS4_BUTTON_CIRCLE,
-    "cross-button": vg.DS4_BUTTONS.DS4_BUTTON_CROSS
+    "cross-button": vg.DS4_BUTTONS.DS4_BUTTON_CROSS,
 }
+
+SPECIAL_BUTTON_MAP = {
+    "ps-button": vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_PS,
+}
+
 
 @app.route('/')
 def index():
@@ -37,13 +42,17 @@ def handle_joystick_data(data):
     # Extract button states from the received data
     button_states = data.get('buttons', {})
 
-    # Update button states
     for button_id, is_active in button_states.items():
         if button_id in BUTTON_MAP:
             if is_active:
-                gamepad.press_button(BUTTON_MAP[button_id])  # Press button if active
+                gamepad.press_button(BUTTON_MAP[button_id])
             else:
-                gamepad.release_button(BUTTON_MAP[button_id])  # Release button if inactive
+                gamepad.release_button(BUTTON_MAP[button_id])
+        elif button_id in SPECIAL_BUTTON_MAP:
+            if is_active:
+                gamepad.press_special_button(SPECIAL_BUTTON_MAP[button_id])
+            else:
+                gamepad.release_special_button(SPECIAL_BUTTON_MAP[button_id])
 
     # Apply changes to the gamepad
     gamepad.update()

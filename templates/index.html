@@ -11,14 +11,15 @@
 </head>
 <body>
     <div class="controller">
-        <img class="controller-image" src="{{ url_for('static', filename='assets/controller.svg') }}" alt="Controller">
+        <img class="controller-image" src="{{ url_for('static', filename='assets/ps-controller.svg') }}" alt="Controller">
+        <div id="toggle-button" style="top: calc(1.5% * (1/0.7)); left: 1.5%;">Toggle</div>
         <div class="joystick-container" id="left-joystick-container" style="top: calc(33.6% * (1/0.7)); left: 27.4%;"></div>
         <div class="joystick-container" id="right-joystick-container" style="top: calc(33.6% * (1/0.7)); left: 56.15%;"></div>
-        <div id="toggle-button" style="top: calc(2% * (1/0.7)); left: 4%;">Toggle</div>
         <div class="button shape-button" id="triangle-button" style="top: calc(20.95% * (1/0.7)); left: 75.17%;"></div>
         <div class="button shape-button" id="square-button" style="top: calc(26.03% * (1/0.7)); left: 69.94%;"></div>
         <div class="button shape-button" id="circle-button" style="top: calc(26.03% * (1/0.7)); left: 80.3%;"></div>
         <div class="button shape-button" id="cross-button" style="top: calc(31.17% * (1/0.7)); left: 75.17%;"></div>
+        <div class="button ps-button" id="ps-button" style="top: calc(39.14% * (1/0.7)); left: 47.32%;"></div>
     </div>
 	
 </body>
