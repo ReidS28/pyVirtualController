@@ -51,9 +51,9 @@ function sendControllerData() {
     
     const joystickData = {
         left_x: leftPosition.x,
-        left_y: leftPosition.y,
+        left_y: leftPosition.y * -1,
         right_x: rightPosition.x,
-        right_y: rightPosition.y,
+        right_y: rightPosition.y * -1,
         buttons: buttonStates
     };
     

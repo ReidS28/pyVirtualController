@@ -15,6 +15,9 @@ BUTTON_MAP = {
     "square-button": vg.DS4_BUTTONS.DS4_BUTTON_SQUARE,
     "circle-button": vg.DS4_BUTTONS.DS4_BUTTON_CIRCLE,
     "cross-button": vg.DS4_BUTTONS.DS4_BUTTON_CROSS,
+
+    "l3-button": vg.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT,
+    "r3-button": vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT
 }
 
 SPECIAL_BUTTON_MAP = {
