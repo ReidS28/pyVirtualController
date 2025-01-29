@@ -18,7 +18,9 @@ const buttons = document.querySelectorAll(".button");
 toggleButton.addEventListener("click", function () {
 	toggleButton.classList.toggle("active");
 	togglingEnabled = toggleButton.classList.contains("active");
+	dpad.updateToggling(togglingEnabled);
 	if (!togglingEnabled) {
+		dpad.clearAllButtons();
 		buttons.forEach((button) => {
 			button.classList.remove("active");
 		});
@@ -59,7 +61,7 @@ const rightJoystick = new Joystick(
 	1.0
 );
 
-const dpad = new Dpad("dpad-container");
+const dpad = new Dpad("dpad-container", "static/assets/ds4-dpad.svg", togglingEnabled);
 
 function sendControllerData() {
 	const leftPosition = leftJoystick.getPosition();
@@ -76,6 +78,7 @@ function sendControllerData() {
 		right_x: rightPosition.x,
 		right_y: rightPosition.y * -1,
 		buttons: buttonStates,
+		dpad: dpad.POV,
 	};
 
 	socket.emit("joystick_data", joystickData);

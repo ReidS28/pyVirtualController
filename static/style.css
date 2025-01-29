@@ -52,7 +52,7 @@ body {
 	justify-content: center;
 	align-items: center;
 	overflow: hidden;
-	color: #ffffff;
+	color: #0d043d;
 }
 
 #toggle-button.active {
@@ -84,7 +84,16 @@ body {
 	border-radius: 50%;
 	box-sizing: border-box;
 	border: none;
-	background-color: rgba(0, 255, 85, 0.1);
+	background-color: none;
+}
+
+.dpad-button{
+	fill:rgba(0, 0, 0, 0.2);
+	transition: fill 0.2s ease;
+}
+
+.dpad-button.active{
+	fill: rgba(18, 26, 170, 0.5);
 }
 
 /* Other Buttons */

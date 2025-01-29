@@ -17,11 +17,23 @@ BUTTON_MAP = {
     "cross-button": vg.DS4_BUTTONS.DS4_BUTTON_CROSS,
 
     "l3-button": vg.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT,
-    "r3-button": vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT
+    "r3-button": vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT,
 }
 
 SPECIAL_BUTTON_MAP = {
     "ps-button": vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_PS,
+}
+
+DPAD_MAP = {
+    -1 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NONE,
+    0 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTH,
+    45 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTHEAST,
+    90 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_EAST,
+    135 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTHEAST,
+    180 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTH,
+    225 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTHWEST,
+    270 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_WEST,
+    315 : vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTHWEST,
 }
 
 
@@ -32,19 +44,14 @@ def index():
 
 @socketio.on('joystick_data')
 def handle_joystick_data(data):
-    # Extract joystick values from the received data
+    button_states = data.get('buttons', {})
+    dpad_pov = data.get('dpad', 0)
     left_x = float(data.get('left_x', 0)) 
     left_y = float(data.get('left_y', 0)) * -1
     right_x = float(data.get('right_x', 0))
     right_y = float(data.get('right_y', 0)) * -1
 
-    # Update joystick positions
-    gamepad.left_joystick_float(x_value_float=left_x, y_value_float=left_y)
-    gamepad.right_joystick_float(x_value_float=right_x, y_value_float=right_y)
-
-    # Extract button states from the received data
-    button_states = data.get('buttons', {})
-
+    # update values
     for button_id, is_active in button_states.items():
         if button_id in BUTTON_MAP:
             if is_active:
@@ -56,6 +63,11 @@ def handle_joystick_data(data):
                 gamepad.press_special_button(SPECIAL_BUTTON_MAP[button_id])
             else:
                 gamepad.release_special_button(SPECIAL_BUTTON_MAP[button_id])
+
+    gamepad.left_joystick_float(x_value_float=left_x, y_value_float=left_y)
+    gamepad.right_joystick_float(x_value_float=right_x, y_value_float=right_y)
+
+    gamepad.directional_pad(direction=DPAD_MAP[dpad_pov])
 
     # Apply changes to the gamepad
     gamepad.update()
