@@ -1,58 +1,27 @@
 export class Dpad {
-    constructor(containerId, svgPath, togglingEnabled = false) {
-        const container = document.getElementById(containerId);
+    constructor(togglingEnabled) {    
+        this.addClassToSVGElements(document.getElementById("dpad-buttons"), "dpad-button");
         
-        if (!container) {
-            throw new Error(`Container with ID "${containerId}" not found.`);
-        }
-        
-        this.container = container;
-        this.svgPath = svgPath;
         this.togglingEnabled = togglingEnabled;
-        this.svgButtons = NaN;
+        this.svgButtons = document.querySelectorAll(".dpad-button");
         this.POV = -1;
-        
-        this.embedSVG();
-    }
-    
-    updateToggling(enabled) {
-        this.togglingEnabled = enabled;
+
+        this.addButtonListenersToSVGButtons()
     }
 
-    async embedSVG() {
-        try {
-            const response = await fetch(this.svgPath);
-            const svgText = await response.text();
+    addClassToSVGElements(svgElement, classContent) {
+		const svgElements = svgElement.querySelectorAll("*");
 
-            const parser = new DOMParser();
-            const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
-            const svgElement = svgDoc.documentElement;
+		svgElements.forEach((element) => {
+			element.classList.add(classContent);
+		});
+	}
 
-            svgElement.setAttribute("width", "100%");
-            svgElement.setAttribute("height", "100%");
-
-            this.container.innerHTML = "";
-            this.container.appendChild(svgElement);
-
-            this.addClassToSVGButtons(svgElement);
-            this.addButtonListenersToSVGButtons(svgElement);
-
-        } catch (error) {
-            console.error("Error loading SVG:", error);
-        }
+    updateTogglingEnabled(togglingEnabled){
+        this.togglingEnabled = togglingEnabled;
     }
 
-    addClassToSVGButtons(svgElement) {
-        const svgButtons = svgElement.querySelectorAll('*');
-
-        svgButtons.forEach((button) => {
-            button.classList.add("dpad-button");
-        });
-    }
-
-    addButtonListenersToSVGButtons(svgElement) {
-        this.svgButtons = svgElement.querySelectorAll('*');
-
+    addButtonListenersToSVGButtons() {
         this.svgButtons.forEach((button) => {
             button.addEventListener("mousedown", () => {
                 this.changeButton(true, button);
@@ -95,13 +64,11 @@ export class Dpad {
         }
     }
     
-    
-
     clearAllButtons() {
         this.svgButtons.forEach((button) => {
             button.classList.remove("active");
         });
-        this.POV = 0;
+        this.POV = -1;
     }
 
 }

@@ -23,10 +23,8 @@ export class Joystick {
         this.joystickHeight = this.containerHeight * 0.7;
         this.maxRadius = Math.min(this.container.clientWidth, this.container.clientHeight) / 2;
 
-        // Set initial joystick position
         this.resetPosition();
 
-        // Add event listeners
         this.container.addEventListener('mousedown', (event) => this.startDrag(event));
         window.addEventListener('mouseup', () => this.endDrag());
         window.addEventListener('mousemove', (event) => this.drag(event));

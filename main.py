@@ -16,6 +16,12 @@ BUTTON_MAP = {
 
     "l3-button": vg.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT,
     "r3-button": vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT,
+
+    "share-button": vg.DS4_BUTTONS.DS4_BUTTON_SHARE,
+    "options-button": vg.DS4_BUTTONS.DS4_BUTTON_OPTIONS,
+
+    "l1-button": vg.DS4_BUTTONS.DS4_BUTTON_SHOULDER_LEFT,
+    "r1-button": vg.DS4_BUTTONS.DS4_BUTTON_SHOULDER_RIGHT,
 }
 
 SPECIAL_BUTTON_MAP = {
@@ -38,7 +44,6 @@ DPAD_MAP = {
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @socketio.on('joystick_data')
 def handle_joystick_data(data):

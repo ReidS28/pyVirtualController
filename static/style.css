@@ -72,8 +72,6 @@ body {
 	background: #0c1325;
 	border-radius: 50%;
 	box-sizing: border-box;
-	width: 70%;
-	height: 70%;
 }
 
 /* Dpad */
@@ -97,39 +95,11 @@ body {
 }
 
 /* Other Buttons */
-.shape-button {
-	position: absolute;
-	width: 4.98%;
-	height: calc(4.98% * (1 / 0.7));
-	border-radius: 50%;
-	box-sizing: border-box;
-	background-color: rgba(0, 0, 0, 0.2);
-	transition: background-color 0.2s ease;
-	border: none;
-}
-
-.joystick-button {
-	position: absolute;
-	width: 8.83%;
-	height: calc(8.83% * (1 / 0.7));
-	border-radius: 50%;
-	box-sizing: border-box;
-	background-color: rgba(0, 0, 0, 0.2);
-	transition: background-color 0.2s ease;
-	border: none;
-}
-
-.ps-button {
-	position: absolute;
-	width: 4.92%;
-	height: calc(4.92% * (1 / 0.7));
-	border-radius: 50%;
-	box-sizing: border-box;
-	background-color: rgba(0, 0, 0, 0.2);
-	transition: background-color 0.2s ease;
-	border: none;
+.button{
+	transition: fill 0.2s ease;
+	fill: rgba(0, 0, 0, 0.2);
 }
 
 .button.active {
-	background-color: rgba(18, 26, 170, 0.5);
+	fill: rgba(18, 26, 170, 0.5);
 }
