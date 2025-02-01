@@ -10,6 +10,10 @@
 		<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 		<script
 			type="module"
+			src="{{ url_for('static', filename='script.js') }}"
+		></script>
+		<script
+			type="module"
 			src="{{ url_for('static', filename='joystick.js') }}"
 		></script>
 		<script
@@ -26,72 +30,10 @@
 		/>
 	</head>
 	<body>
-		<div class="controller">
-			<img
-				class="controller-image"
-				src="{{ url_for('static', filename='assets/ds4-controller.svg') }}"
-				alt="Controller"
-			/>
-			<div
-				id="toggle-button"
-				style="top: calc(1.5% * (1 / 0.7)); left: 1.5%"
-			>
-				Toggle
-			</div>
-			<div
-				class="joystick-container"
-				id="left-joystick-container"
-				style="top: calc(33.6% * (1 / 0.7)); left: 27.4%"
-			></div>
-			<div
-				class="joystick-container"
-				id="right-joystick-container"
-				style="top: calc(33.6% * (1 / 0.7)); left: 56.15%"
-			></div>
-
-			<div
-				class="dpad-container"
-				id="dpad-container"
-				style="top: calc(17.98% * (1 / 0.7)); left: 11.41%"
-			></div>
-
-			<div
-				class="button shape-button"
-				id="triangle-button"
-				style="top: calc(20.95% * (1 / 0.7)); left: 75.17%"
-			></div>
-			<div
-				class="button shape-button"
-				id="square-button"
-				style="top: calc(26.03% * (1 / 0.7)); left: 69.94%"
-			></div>
-			<div
-				class="button shape-button"
-				id="circle-button"
-				style="top: calc(26.03% * (1 / 0.7)); left: 80.3%"
-			></div>
-			<div
-				class="button shape-button"
-				id="cross-button"
-				style="top: calc(31.17% * (1 / 0.7)); left: 75.17%"
-			></div>
-
-			<div
-				class="button ps-button"
-				id="ps-button"
-				style="top: calc(39.14% * (1 / 0.7)); left: 47.32%"
-			></div>
-
-			<div
-				class="button joystick-button"
-				id="l3-button"
-				style="top: calc(51.25% * (1 / 0.7)); left: 27.2%"
-			></div>
-			<div
-				class="button joystick-button"
-				id="r3-button"
-				style="top: calc(51.25% * (1 / 0.7)); left: 63.65%"
-			></div>
+		<div
+			class="controller"
+			id="controller"
+		>
 		</div>
 	</body>
 </html>

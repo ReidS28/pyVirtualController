@@ -1,8 +1,6 @@
-import { Joystick } from "./joystick.js";
-import { Dpad } from "./dpad.js";
+import { Controller } from "./controller.js";
 
 const socket = io();
-var togglingEnabled = false;
 
 window.addEventListener(
 	"resize",
@@ -12,76 +10,11 @@ window.addEventListener(
 	true
 );
 
-const toggleButton = document.getElementById("toggle-button");
-const buttons = document.querySelectorAll(".button");
+    const controller = new Controller('controller', 'static/assets/ds4-controller.svg');
 
-toggleButton.addEventListener("click", function () {
-	toggleButton.classList.toggle("active");
-	togglingEnabled = toggleButton.classList.contains("active");
-	dpad.updateToggling(togglingEnabled);
-	if (!togglingEnabled) {
-		dpad.clearAllButtons();
-		buttons.forEach((button) => {
-			button.classList.remove("active");
-		});
-	}
-});
+    function sendControllerData() {
 
-buttons.forEach((button) => {
-	button.addEventListener("mousedown", function () {
-		if (togglingEnabled) {
-			button.classList.toggle("active");
-		} else {
-			button.classList.add("active");
-		}
-	});
-	button.addEventListener("mouseup", function () {
-		if (!togglingEnabled) {
-			button.classList.remove("active");
-		}
-	});
-});
+        socket.emit('joystick_data', controller.getControllerState());
+    }
 
-const leftJoystick = new Joystick(
-	"left-joystick-container",
-	-1.0,
-	0.0,
-	1.0,
-	-1.0,
-	0.0,
-	1.0
-);
-const rightJoystick = new Joystick(
-	"right-joystick-container",
-	-1.0,
-	0.0,
-	1.0,
-	-1.0,
-	0.0,
-	1.0
-);
-
-const dpad = new Dpad("dpad-container", "static/assets/ds4-dpad.svg", togglingEnabled);
-
-function sendControllerData() {
-	const leftPosition = leftJoystick.getPosition();
-	const rightPosition = rightJoystick.getPosition();
-
-	const buttonStates = {};
-	buttons.forEach((button) => {
-		buttonStates[button.id] = button.classList.contains("active");
-	});
-
-	const joystickData = {
-		left_x: leftPosition.x,
-		left_y: leftPosition.y * -1,
-		right_x: rightPosition.x,
-		right_y: rightPosition.y * -1,
-		buttons: buttonStates,
-		dpad: dpad.POV,
-	};
-
-	socket.emit("joystick_data", joystickData);
-}
-
-setInterval(sendControllerData, 50);
+    setInterval(sendControllerData, 50);
