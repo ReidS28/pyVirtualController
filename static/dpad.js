@@ -10,7 +10,7 @@ export class Dpad {
         this.svgPath = svgPath;
         this.togglingEnabled = togglingEnabled;
         this.svgButtons = NaN;
-        this.POV = 0;
+        this.POV = -1;
         
         this.embedSVG();
     }
@@ -82,6 +82,10 @@ export class Dpad {
                 this.clearAllButtons();
                 button.classList.add("active");
                 this.POV = buttonValue;
+            }else if (buttonValue == this.POV && buttonValue !== undefined) {
+                this.clearAllButtons();
+                button.classList.remove("active");
+                this.POV = -1;
             }
         } else {
             if (!this.togglingEnabled) {

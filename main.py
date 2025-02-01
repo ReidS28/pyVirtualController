@@ -6,10 +6,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-gamepad = vg.VDS4Gamepad()  # Virtual DualShock 4 controller
+gamepad = vg.VDS4Gamepad()
 
-
-# Mapping of button IDs from the frontend to virtual gamepad buttons
 BUTTON_MAP = {
     "triangle-button": vg.DS4_BUTTONS.DS4_BUTTON_TRIANGLE,
     "square-button": vg.DS4_BUTTONS.DS4_BUTTON_SQUARE,
@@ -39,7 +37,7 @@ DPAD_MAP = {
 
 @app.route('/')
 def index():
-    return render_template('index.html')  # Serve the web interface
+    return render_template('index.html')
 
 
 @socketio.on('joystick_data')
@@ -51,7 +49,6 @@ def handle_joystick_data(data):
     right_x = float(data.get('right_x', 0))
     right_y = float(data.get('right_y', 0)) * -1
 
-    # update values
     for button_id, is_active in button_states.items():
         if button_id in BUTTON_MAP:
             if is_active:
@@ -69,11 +66,7 @@ def handle_joystick_data(data):
 
     gamepad.directional_pad(direction=DPAD_MAP[dpad_pov])
 
-    # Apply changes to the gamepad
     gamepad.update()
-
-    # Log the joystick and button data for debugging
-    print(f"Button States: {button_states}")
 
 
 if __name__ == '__main__':
