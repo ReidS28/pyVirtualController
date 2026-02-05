@@ -2,6 +2,12 @@ import { Controller } from "./controller.js";
 
 const socket = io();
 
+window.globalState = {
+    buttonTogglingEnabled: false,
+	holdJoysticks: false,
+	holdTriggers: false
+};
+
 window.addEventListener(
 	"resize",
 	function (event) {

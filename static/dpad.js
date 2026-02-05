@@ -1,8 +1,7 @@
 export class Dpad {
-    constructor(togglingEnabled) {    
-        this.addClassToSVGElements(document.getElementById("dpad-buttons"), "dpad-button");
+    constructor(containerId) {    
+        this.addClassToSVGElements(document.getElementById(containerId), "dpad-button");
         
-        this.togglingEnabled = togglingEnabled;
         this.svgButtons = document.querySelectorAll(".dpad-button");
         this.POV = -1;
 
@@ -16,10 +15,6 @@ export class Dpad {
 			element.classList.add(classContent);
 		});
 	}
-
-    updateTogglingEnabled(togglingEnabled){
-        this.togglingEnabled = togglingEnabled;
-    }
 
     addButtonListenersToSVGButtons() {
         this.svgButtons.forEach((button) => {
@@ -57,7 +52,7 @@ export class Dpad {
                 this.POV = -1;
             }
         } else {
-            if (!this.togglingEnabled) {
+            if (!window.globalState.buttonTogglingEnabled) {
                 this.clearAllButtons();
                 this.POV = -1;
             }

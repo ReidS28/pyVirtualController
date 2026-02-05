@@ -1,5 +1,6 @@
 import { Dpad } from "./dpad.js";
 import { Joystick } from "./joystick.js";
+import { ToggleControls } from "./toggleControls.js";
 
 export class Controller {
 	constructor(containerId, svgPath) {
@@ -10,7 +11,6 @@ export class Controller {
 		}
 
 		this.container = container;
-		this.togglingEnabled = false;
 		this.svgPath = svgPath;
 		this.buttons = NaN;
 		this.leftJoystick = NaN;
@@ -22,7 +22,7 @@ export class Controller {
 
 	async initializeController() {
 		try {
-			const toggleButton = document.createElement("div");
+			/*const toggleButton = document.createElement("div");
 			toggleButton.id = "toggle-button";
 			toggleButton.style.top = "calc(1.5% * (1 / 0.7))";
 			toggleButton.style.left = "1.5%";
@@ -32,14 +32,14 @@ export class Controller {
 				"click",
 				function () {
 					toggleButton.classList.toggle("active");
-					this.togglingEnabled = toggleButton.classList.contains("active");
-					this.dpad.updateTogglingEnabled(this.togglingEnabled);
-					if (!this.togglingEnabled) {
+					window.globalState.buttonTogglingEnabled = toggleButton.classList.contains("active");
+					if (!window.globalState.buttonTogglingEnabled) {
 						this.clearAllButtons();
 						this.dpad.clearAllButtons();
 					}
 				}.bind(this)
-			);
+			);*/
+			const toggleControls = new ToggleControls(this.container, "calc(1.5% * (1 / 0.7))", "1.5", 100, 100);
 
 			const response = await fetch(this.svgPath);
 			const svgText = await response.text();
@@ -60,11 +60,13 @@ export class Controller {
 
 			this.createDivForGroup(
 				"left-joystick-container-svg",
-				"left-joystick-container"
+				"left-joystick-container",
+				"joystick-container"
 			);
 			this.createDivForGroup(
 				"right-joystick-container-svg",
-				"right-joystick-container"
+				"right-joystick-container", 
+				"joystick-container"
 			);
 
 			this.leftJoystick = new Joystick(
@@ -86,7 +88,7 @@ export class Controller {
 				1.0
 			);
 
-			this.dpad = new Dpad(this.togglingEnabled);
+			this.dpad = new Dpad("dpad-buttons");
 		} catch (error) {
 			console.error("Error loading SVG:", error);
 		}
@@ -101,7 +103,7 @@ export class Controller {
 	}
 
 	addEventListeners(elements) {
-		const togglingEnabled = () => this.togglingEnabled;
+		const togglingEnabled = () => window.globalState.buttonTogglingEnabled;
 		elements.forEach((element) => {
 			element.addEventListener("mousedown", function () {
 				if (togglingEnabled()) {
@@ -124,27 +126,29 @@ export class Controller {
 		});
 	}
 
-	createDivForGroup(groupId, divId) {
+	createDivForGroup(groupId, divId, className = NaN) {
 		const group = document.getElementById(groupId);
 		if (!group) {
 			console.error(`Error: Group with ID '${groupId}' not found.`);
 			return;
 		}
-
-		const bbox = group.getBoundingClientRect();
-
-		// Create a <div>
+	
+		const groupBBox = group.getBoundingClientRect();
+		const containerBBox = this.container.getBoundingClientRect(); // Get container's absolute position
+	
 		const div = document.createElement("div");
 		div.id = divId;
+		if (className !== NaN) div.classList.add(String(className));
+	
 		div.style.position = "absolute";
-		div.style.left = `${bbox.left}px`;
-		div.style.top = `${bbox.top}px`;
-		div.style.width = `${bbox.width}px`;
-		div.style.height = `${bbox.height}px`;
-
-		document.body.appendChild(div);
+		div.style.left = `${groupBBox.left - containerBBox.left}px`;
+		div.style.top = `${groupBBox.top - containerBBox.top}px`;
+		div.style.width = `${groupBBox.width}px`;
+		div.style.height = `${groupBBox.height}px`;
+	
+		this.container.appendChild(div);
 	}
-
+	
 	getControllerState() {
 		let buttonStates = {};
 		if (this.buttons) {
