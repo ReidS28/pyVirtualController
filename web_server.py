@@ -58,6 +58,9 @@ class WebServer:
 
     def handle_data(self, gamepad_id: int, data):
         target_gamepad = self.gamepads[gamepad_id]
-        if "pressed" in data:
-            state = data["pressed"]
-            target_gamepad.updateState(state)
+        for button_id, payload in data.items():
+            if button_id in VirtualGamepad.BUTTON_MAP:
+                button_constant = VirtualGamepad.BUTTON_MAP[button_id]
+                if "pressed" in payload:
+                    state = payload["pressed"]
+                    target_gamepad.updateState(button_constant, state)

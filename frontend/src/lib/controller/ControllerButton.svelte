@@ -10,9 +10,13 @@
 
 	let { children, id, connection }: Props = $props();
 
-	function sendState(isPressed: boolean) {
-		if (connection) connection.send({ pressed: isPressed });
-	}
+function sendState(isPressed: boolean) {
+    if (connection) {
+        connection.send({ 
+            [`b${id}`]: { pressed: isPressed } 
+        });
+    }
+}
 </script>
 
 <button
