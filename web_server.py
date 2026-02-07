@@ -1,27 +1,63 @@
 import os
+import threading
 import uvicorn
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
+from virtual_gamepad import VirtualGamepad
+
 
 class WebServer:
-    def __init__(self, num_gamepads: int):
-        self.num_gamepads = num_gamepads
+    def __init__(self, gamepads: list[VirtualGamepad]):
+        self.gamepads = gamepads
         self.app = FastAPI()
-        
         self.router = APIRouter()
         self.register_routes()
         self.app.include_router(self.router)
 
         dist_path = "frontend/dist"
         if os.path.exists(dist_path):
-            self.app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
-        else:
-            print(f"Warning: {dist_path} not found. Serve the frontend manually or run 'npm run build'.")
+            self.app.mount(
+                "/", StaticFiles(directory=dist_path, html=True), name="static"
+            )
+
+        self.server = None
+        self.server_thread = None
 
     def register_routes(self):
         @self.router.get("/api/status")
         async def read_root():
-            return {"status": "online", "gamepads": self.num_gamepads}
+            return {"status": "online", "gamepads": len(self.gamepads)}
 
-    def run(self):
-        uvicorn.run(self.app, host="0.0.0.0", port=8000)
+        @self.app.websocket("/ws/gamepad/{gamepad_id}")
+        async def websocket_endpoint(websocket: WebSocket, gamepad_id: int):
+            await websocket.accept()
+
+            if gamepad_id >= len(self.gamepads):
+                await websocket.close(code=1008)
+                return
+            
+
+            try:
+                while True:
+                    data = await websocket.receive_json()
+                    self.handle_data(gamepad_id, data)
+
+            except WebSocketDisconnect:
+                print(f"Client disconnected from gamepad {gamepad_id}")
+
+    def start(self):
+        config = uvicorn.Config(self.app, host="0.0.0.0", port=8000, log_level="info")
+        self.server = uvicorn.Server(config)
+        self.server_thread = threading.Thread(target=self.server.run, daemon=True)
+        self.server_thread.start()
+
+    def stop(self):
+        if self.server:
+            self.server.should_exit = True
+            self.server_thread.join()
+
+    def handle_data(self, gamepad_id: int, data):
+        target_gamepad = self.gamepads[gamepad_id]
+        if "pressed" in data:
+            state = data["pressed"]
+            target_gamepad.updateState(state)
