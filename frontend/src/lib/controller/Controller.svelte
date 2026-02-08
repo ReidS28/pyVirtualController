@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from "svelte";
 	import { ControllerConnection } from "./webSocket.svelte";
 	import ControllerButton from "./ControllerButton.svelte";
+	import ControllerJoystick from "./ControllerJoystick.svelte";
 
 	interface Props {
 		controllerID: number;
@@ -68,4 +69,15 @@
 	id={11}
 	{connection}>Button 11</ControllerButton
 >
-
+<ControllerButton
+	id={16}
+	{connection}>Button 16</ControllerButton
+>
+<ControllerButton
+	id={17}
+	{connection}>Button 17</ControllerButton
+>
+<ControllerJoystick
+	id={0}
+	{connection}>EEEEEE</ControllerJoystick
+>

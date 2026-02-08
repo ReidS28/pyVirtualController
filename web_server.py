@@ -35,7 +35,6 @@ class WebServer:
             if gamepad_id >= len(self.gamepads):
                 await websocket.close(code=1008)
                 return
-            
 
             try:
                 while True:
@@ -57,10 +56,16 @@ class WebServer:
             self.server_thread.join()
 
     def handle_data(self, gamepad_id: int, data):
+        print(data)
         target_gamepad = self.gamepads[gamepad_id]
         for button_id, payload in data.items():
             if button_id in VirtualGamepad.BUTTON_MAP:
                 button_constant = VirtualGamepad.BUTTON_MAP[button_id]
                 if "pressed" in payload:
                     state = payload["pressed"]
-                    target_gamepad.updateState(button_constant, state)
+                    target_gamepad.update_button_state(button_constant, state)
+            elif button_id in VirtualGamepad.SPECIAL_BUTTON_MAP:
+                special_button_constant = VirtualGamepad.SPECIAL_BUTTON_MAP[button_id]
+                if "pressed" in payload:
+                    state = payload["pressed"]
+                    target_gamepad.update_special_button_state(special_button_constant, state)
