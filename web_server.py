@@ -72,3 +72,8 @@ class WebServer:
                 joystick = VirtualGamepad.JOYSTICK_MAP[id]
                 if "x" in payload and "y" in payload:
                     target_gamepad.update_joystick_state(joystick, payload["x"], payload["y"])
+            elif id == "dpad" and "angle" in payload:
+                angle: str = str(payload["angle"])
+                if angle in VirtualGamepad.DPAD_MAP:
+                    angle_constant = VirtualGamepad.DPAD_MAP[angle]
+                    target_gamepad.update_dpad_state(angle_constant)

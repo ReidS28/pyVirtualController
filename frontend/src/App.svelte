@@ -3,5 +3,13 @@
 </script>
 
 <main>
-  <Controller controllerID={0} />
+  <div class="container">
+    <Controller controllerID={0} />
+  </div>
 </main>
+
+<style>
+  .container {
+    width: 80%;
+  }
+</style>

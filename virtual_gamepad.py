@@ -30,6 +30,18 @@ class VirtualGamepad:
         "j1": "right",
     }
 
+    DPAD_MAP = {
+        "-1": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NONE,
+        "0": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTH,
+        "45": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTHEAST,
+        "90": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_EAST,
+        "135": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTHEAST,
+        "180": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTH,
+        "225": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTHWEST,
+        "270": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_WEST,
+        "315": vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTHWEST,
+    }
+
     def __init__(self, controllerIndex: int) -> None:
         self.controllerIndex = controllerIndex
         self.gamepad = vg.VDS4Gamepad()
@@ -67,3 +79,6 @@ class VirtualGamepad:
             self.gamepad.left_joystick_float(x, y)
         elif joystick == "right":
             self.gamepad.right_joystick_float(x, y)
+
+    def update_dpad_state(self, angle):
+        self.gamepad.directional_pad(angle)
