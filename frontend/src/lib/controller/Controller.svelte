@@ -79,5 +79,9 @@
 >
 <ControllerJoystick
 	id={0}
-	{connection}>EEEEEE</ControllerJoystick
+	{connection}>Left Controller</ControllerJoystick
+>
+<ControllerJoystick
+	id={1}
+	{connection}>Right Controller</ControllerJoystick
 >

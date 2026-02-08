@@ -18,8 +18,11 @@
 
 		if (connection) {
 			connection.send({
-				[`j${id}`]: { [axis]: value },
-			});
+                [`j${id}`]: { 
+                    x: axes.x, 
+                    y: axes.y 
+                }
+            });
 		}
 	}
 </script>

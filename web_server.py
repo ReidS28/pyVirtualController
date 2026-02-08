@@ -56,16 +56,19 @@ class WebServer:
             self.server_thread.join()
 
     def handle_data(self, gamepad_id: int, data):
-        print(data)
         target_gamepad = self.gamepads[gamepad_id]
-        for button_id, payload in data.items():
-            if button_id in VirtualGamepad.BUTTON_MAP:
-                button_constant = VirtualGamepad.BUTTON_MAP[button_id]
+        for id, payload in data.items():
+            if id in VirtualGamepad.BUTTON_MAP:
+                button_constant = VirtualGamepad.BUTTON_MAP[id]
                 if "pressed" in payload:
                     state = payload["pressed"]
                     target_gamepad.update_button_state(button_constant, state)
-            elif button_id in VirtualGamepad.SPECIAL_BUTTON_MAP:
-                special_button_constant = VirtualGamepad.SPECIAL_BUTTON_MAP[button_id]
+            elif id in VirtualGamepad.SPECIAL_BUTTON_MAP:
+                special_button_constant = VirtualGamepad.SPECIAL_BUTTON_MAP[id]
                 if "pressed" in payload:
                     state = payload["pressed"]
                     target_gamepad.update_special_button_state(special_button_constant, state)
+            elif id in VirtualGamepad.JOYSTICK_MAP:
+                joystick = VirtualGamepad.JOYSTICK_MAP[id]
+                if "x" in payload and "y" in payload:
+                    target_gamepad.update_joystick_state(joystick, payload["x"], payload["y"])

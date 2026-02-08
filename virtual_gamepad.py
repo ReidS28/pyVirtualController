@@ -25,6 +25,11 @@ class VirtualGamepad:
         "b17": vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_TOUCHPAD,
     }
 
+    JOYSTICK_MAP = {
+        "j0": "left",
+        "j1": "right",
+    }
+
     def __init__(self, controllerIndex: int) -> None:
         self.controllerIndex = controllerIndex
         self.gamepad = vg.VDS4Gamepad()
@@ -56,3 +61,9 @@ class VirtualGamepad:
         else:
             self.gamepad.release_special_button(special_button)
         self.gamepad.update()
+
+    def update_joystick_state(self, joystick, x, y):
+        if joystick == "left":
+            self.gamepad.left_joystick_float(x, y)
+        elif joystick == "right":
+            self.gamepad.right_joystick_float(x, y)
