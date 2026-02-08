@@ -1,4 +1,3 @@
-// robotSocket.ts
 export class ControllerConnection {
     socket: WebSocket | null = null;
     status = $state("disconnected");
@@ -12,6 +11,7 @@ export class ControllerConnection {
     }
 
         send(data: object) {
+            console.log("Sent: " + JSON.stringify(data));
             if (this.socket?.readyState === WebSocket.OPEN) {
                 this.socket.send(JSON.stringify(data));
             }

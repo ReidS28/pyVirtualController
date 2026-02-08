@@ -1,87 +1,81 @@
 <script lang="ts">
-	import { onMount, onDestroy } from "svelte";
-	import { ControllerConnection } from "./webSocket.svelte";
-	import ControllerButton from "./ControllerButton.svelte";
-	import ControllerJoystick from "./ControllerJoystick.svelte";
+    import { onMount, onDestroy } from "svelte";
+    import { ControllerConnection } from "./webSocket.svelte";
+    import ds4SVG from "../../assets/ds4-controller.svg?raw";
 
-	interface Props {
-		controllerID: number;
-	}
+    interface Props {
+        controllerID: number;
+    }
 
-	let { controllerID }: Props = $props();
+    let { controllerID }: Props = $props();
+    let connection: ControllerConnection | null = $state(null);
 
-	let connection: ControllerConnection | null = $state(null);
+    onMount(() => {
+        connection = new ControllerConnection(controllerID);
+    });
 
-	onMount(() => {
-		connection = new ControllerConnection(controllerID);
-	});
+    onDestroy(() => {
+        if (connection) connection.close();
+    });
 
-	onDestroy(() => {
-		if (connection) connection.close();
-	});
+    function handleAction(event: PointerEvent, isPressed: boolean) {
+        const target = event.target as SVGElement;
+        const key = target?.getAttribute("data-key");
+
+        if (key && key.startsWith("b")) {
+            event.preventDefault();
+            if (isPressed) {
+                target.classList.add("pressed");
+                target.setPointerCapture(event.pointerId);
+            } else {
+                target.classList.remove("pressed");
+                target.releasePointerCapture(event.pointerId);
+            }
+
+            if (connection) {
+                connection.send({
+					[key]: { 
+						pressed: isPressed 
+					}
+				});
+            }
+        }else{
+			console.log(key)
+		}
+    }
 </script>
 
-<ControllerButton
-	id={0}
-	{connection}>Button 0</ControllerButton
+<div 
+    class="controller-wrapper"
+    onpointerdown={(e) => handleAction(e, true)}
+    onpointerup={(e) => handleAction(e, false)}
+    onpointerleave={(e) => handleAction(e, false)} 
 >
-<ControllerButton
-	id={1}
-	{connection}>Button 1</ControllerButton
->
-<ControllerButton
-	id={2}
-	{connection}>Button 2</ControllerButton
->
-<ControllerButton
-	id={3}
-	{connection}>Button 3</ControllerButton
->
-<ControllerButton
-	id={4}
-	{connection}>Button 4</ControllerButton
->
-<ControllerButton
-	id={5}
-	{connection}>Button 5</ControllerButton
->
-<ControllerButton
-	id={6}
-	{connection}>Button 6</ControllerButton
->
-<ControllerButton
-	id={7}
-	{connection}>Button 7</ControllerButton
->
-<ControllerButton
-	id={8}
-	{connection}>Button 8</ControllerButton
->
-<ControllerButton
-	id={9}
-	{connection}>Button 9</ControllerButton
->
-<ControllerButton
-	id={10}
-	{connection}>Button 10</ControllerButton
->
-<ControllerButton
-	id={11}
-	{connection}>Button 11</ControllerButton
->
-<ControllerButton
-	id={16}
-	{connection}>Button 16</ControllerButton
->
-<ControllerButton
-	id={17}
-	{connection}>Button 17</ControllerButton
->
-<ControllerJoystick
-	id={0}
-	{connection}>Left Controller</ControllerJoystick
->
-<ControllerJoystick
-	id={1}
-	{connection}>Right Controller</ControllerJoystick
->
+    {@html ds4SVG}
+</div>
+
+<style>
+    .controller-wrapper {
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+        touch-action: none;
+        user-select: none;
+    }
+
+    :global(.controller-wrapper svg) {
+        width: 100%;
+        height: auto;
+    }
+
+    :global(.controller-wrapper [data-key^="b"]) {
+        cursor: pointer;
+        transition: fill 0.1s;
+    }
+
+    :global(.controller-wrapper .pressed) {
+        fill: #ff3e00 !important;
+        stroke: white !important;
+        stroke-width: 0.5px;
+    }
+</style>

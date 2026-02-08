@@ -76,32 +76,10 @@
 		font-family: sans-serif;
 	}
 
-	.header {
-		margin-bottom: 1rem;
-		border-bottom: 1px solid #444;
-		padding-bottom: 0.5rem;
-	}
-
 	.slider-group {
 		display: flex;
 		flex-direction: column;
 		margin-top: 1rem;
 	}
 
-	label {
-		font-size: 0.8rem;
-		margin-bottom: 4px;
-		color: #bbb;
-	}
-
-	.slider {
-		cursor: pointer;
-		accent-color: #007bff;
-	}
-
-	hr {
-		border: 0;
-		border-top: 1px solid #444;
-		margin: 1rem 0;
-	}
 </style>
