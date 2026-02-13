@@ -1,3 +1,0 @@
-vgamepad
-fastapi[standard]
-uvicorn

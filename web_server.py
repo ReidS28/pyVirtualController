@@ -71,7 +71,8 @@ class WebServer:
             elif id in VirtualGamepad.JOYSTICK_MAP:
                 joystick = VirtualGamepad.JOYSTICK_MAP[id]
                 if "x" in payload and "y" in payload:
-                    target_gamepad.update_joystick_state(joystick, payload["x"], payload["y"])
+                    # Y needs to be inverted
+                    target_gamepad.update_joystick_state(joystick, payload["x"], -payload["y"])
             elif id == "dpad" and "angle" in payload:
                 angle: str = str(payload["angle"])
                 if angle in VirtualGamepad.DPAD_MAP:
