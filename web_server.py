@@ -67,12 +67,16 @@ class WebServer:
                 special_button_constant = VirtualGamepad.SPECIAL_BUTTON_MAP[id]
                 if "pressed" in payload:
                     state = payload["pressed"]
-                    target_gamepad.update_special_button_state(special_button_constant, state)
+                    target_gamepad.update_special_button_state(
+                        special_button_constant, state
+                    )
             elif id in VirtualGamepad.JOYSTICK_MAP:
                 joystick = VirtualGamepad.JOYSTICK_MAP[id]
                 if "x" in payload and "y" in payload:
                     # Y needs to be inverted
-                    target_gamepad.update_joystick_state(joystick, payload["x"], -payload["y"])
+                    target_gamepad.update_joystick_state(
+                        joystick, payload["x"], -payload["y"]
+                    )
             elif id == "dpad" and "angle" in payload:
                 angle: str = str(payload["angle"])
                 if angle in VirtualGamepad.DPAD_MAP:
