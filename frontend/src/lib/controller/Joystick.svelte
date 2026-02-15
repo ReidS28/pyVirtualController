@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import { ControllerConnection } from "./webSocket.svelte";
 
 	interface Props {
@@ -13,6 +14,16 @@
 
 	let axes = $state({ x: 0, y: 0 });
 	let dragging = $state(false);
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			connection?.send({
+				[id]: { x: axes.x, y: axes.y },
+			});
+		}, 100);
+
+		return () => clearInterval(interval);
+	});
 
 	function startDrag(e: PointerEvent) {
 		dragging = true;

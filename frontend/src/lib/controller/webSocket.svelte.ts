@@ -12,10 +12,7 @@ export class ControllerConnection {
 
         send(data: object) {
             if (this.socket?.readyState === WebSocket.OPEN) {
-                console.log("Sending: " + JSON.stringify(data));
                 this.socket.send(JSON.stringify(data));
-            }else{
-                console.log("Failed to send:" + JSON.stringify(data));
             }
         }
 

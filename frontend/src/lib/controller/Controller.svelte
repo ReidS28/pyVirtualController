@@ -113,7 +113,6 @@
 	onpointerup={(e) => handleAction(e, false)}
 	onpointerleave={(e) => handleAction(e, false)}
 >
-	Controller {controllerID}
 	{@html ds4SVG}
 
 	{#each joysticks as j}
