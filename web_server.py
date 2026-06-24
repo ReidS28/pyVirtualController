@@ -3,6 +3,7 @@ import threading
 import uvicorn
 from fastapi import FastAPI, APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from virtual_gamepad import VirtualGamepad
 
 
@@ -24,6 +25,13 @@ class WebServer:
         self.server_thread = None
 
     def register_routes(self):
+        @self.router.get("/gamepad/{gamepad_id}")
+        async def serve_gamepad_ui(gamepad_id: int):
+            if gamepad_id >= len(self.gamepads):
+                return {"error": "Gamepad slot not found"}
+            
+            return FileResponse("frontend/dist/index.html")
+        
         @self.router.get("/api/status")
         async def read_root():
             return {"status": "online", "gamepads": len(self.gamepads)}
