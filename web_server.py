@@ -1,7 +1,7 @@
 import os
 import threading
 import uvicorn
-from fastapi import FastAPI, APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, APIRouter, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from virtual_gamepad import VirtualGamepad
@@ -34,7 +34,25 @@ class WebServer:
         
         @self.router.get("/api/status")
         async def read_root():
-            return {"status": "online", "gamepads": len(self.gamepads)}
+            return {
+                "status": "online", 
+                "gamepads": [
+                    {"id": i, "profile": g.current_profile} 
+                    for i, g in enumerate(self.gamepads)
+                ]
+            }
+
+        @self.router.post("/api/gamepad/{gamepad_id}/profile")
+        async def change_profile(gamepad_id: int, profile_payload: dict):
+            if gamepad_id >= len(self.gamepads):
+                raise HTTPException(status_code=404, detail="Gamepad not found")
+            
+            new_profile = profile_payload.get("profile")
+            try:
+                self.gamepads[gamepad_id].current_profile = new_profile
+                return {"status": "success", "gamepad_id": gamepad_id, "current_profile": new_profile}
+            except ValueError as e:
+                raise HTTPException(status_code=400, detail=str(e))
 
         @self.app.websocket("/ws/gamepad/{gamepad_id}")
         async def websocket_endpoint(websocket: WebSocket, gamepad_id: int):
@@ -63,30 +81,23 @@ class WebServer:
             self.server.should_exit = True
             self.server_thread.join()
 
-    def handle_data(self, gamepad_id: int, data):
+    def handle_data(self, gamepad_id: int, data: dict):
         target_gamepad = self.gamepads[gamepad_id]
-        for id, payload in data.items():
-            if id in VirtualGamepad.BUTTON_MAP:
-                button_constant = VirtualGamepad.BUTTON_MAP[id]
+        
+        for input_id, payload in data.items():
+            if input_id in target_gamepad.BUTTON_MAP:
                 if "pressed" in payload:
-                    state = payload["pressed"]
-                    target_gamepad.update_button_state(button_constant, state)
-            elif id in VirtualGamepad.SPECIAL_BUTTON_MAP:
-                special_button_constant = VirtualGamepad.SPECIAL_BUTTON_MAP[id]
+                    target_gamepad.update_button_state(input_id, payload["pressed"])
+                    
+            elif input_id in target_gamepad.SPECIAL_BUTTON_MAP:
                 if "pressed" in payload:
-                    state = payload["pressed"]
-                    target_gamepad.update_special_button_state(
-                        special_button_constant, state
-                    )
-            elif id in VirtualGamepad.JOYSTICK_MAP:
-                joystick = VirtualGamepad.JOYSTICK_MAP[id]
+                    target_gamepad.update_special_button_state(input_id, payload["pressed"])
+                    
+            elif input_id in target_gamepad.JOYSTICK_MAP:
                 if "x" in payload and "y" in payload:
-                    # Y needs to be inverted
-                    target_gamepad.update_joystick_state(
-                        joystick, payload["x"], -payload["y"]
-                    )
-            elif id == "dpad" and "angle" in payload:
-                angle: str = str(payload["angle"])
-                if angle in VirtualGamepad.DPAD_MAP:
-                    angle_constant = VirtualGamepad.DPAD_MAP[angle]
-                    target_gamepad.update_dpad_state(angle_constant)
+                    target_gamepad.update_joystick_state(input_id, payload["x"], -payload["y"])
+                    
+            elif input_id == "dpad" and "angle" in payload:
+                angle_key = str(payload["angle"])
+                if angle_key in target_gamepad.DPAD_MAP:
+                    target_gamepad.update_dpad_state(angle_key)
